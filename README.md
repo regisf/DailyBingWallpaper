@@ -4,13 +4,16 @@ Every day, set the daily [Bing](https://bing.com/) image as your wallpaper.
 
 ## Purpose
 
-Daily Bing Wallpaper is a simple WinForm program to change your wallpaper by downloading the daily
-[Bing.com](https://bing.com/) background image. 
-
+Daily Bing Wallpaper is a simple WinForm program to change your wallpaper 
+by downloading the daily [Bing.com](https://bing.com/) background image. 
 
 ## Install
 
 Just download the latest installer. 
+
+Download the application [on this page](https://github.com/regisf/DailyBingWallpaper/releases)
+and launch it. 
+
 
 ## Build
 
