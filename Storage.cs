@@ -23,7 +23,7 @@ namespace DailyBingWallpaper
 {
     internal class Storage
     {
-        const string DirectoryName = "DailyBingWallpaper ";
+        const string DirectoryName = "DailyBingWallpaper";
 
         private void CreateDirectoryIfNotExists(string dirPath)
         {

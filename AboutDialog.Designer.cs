@@ -70,7 +70,7 @@
             this.linkLabel1.Size = new System.Drawing.Size(177, 13);
             this.linkLabel1.TabIndex = 2;
             this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "https://DailyBingWallpaper  .github.io/";
+            this.linkLabel1.Text = "https://DailyBingWallpaper.github.io/";
             this.linkLabel1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // licenseButton

@@ -26,7 +26,8 @@ namespace DailyBingWallpaper
     /// </summary>
     internal class RegistryMgt
     {
-        const string RegistryKeyValue = @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+        const string RegistryKeyValue = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run";
+        const string CurrentUserRegistryKeyValue = @"Software\Microsoft\Windows\CurrentVersion\Run";
         const string ApplicationKeyValue = "Daily Bing Wallpaper";
 
         /// <summary>
@@ -35,14 +36,12 @@ namespace DailyBingWallpaper
         /// <param name="startWithWindows">Shall the application starts with windows flag (true if starts false elsewhere)</param>
         internal static void SetApplicationRunAtWindowsStartup(bool startWithWindows)
         {
-            var keyExists = KeyExists();
-
-            if (keyExists && !startWithWindows)
+            if (!startWithWindows)
             {
                 RemoveKey();
             }
 
-            else if (!keyExists && startWithWindows)
+            else
             {
                 InstallKey();
             }
@@ -71,7 +70,7 @@ namespace DailyBingWallpaper
         /// </summary>
         static void RemoveKey()
         {
-            Registry.CurrentUser.OpenSubKey(RegistryKeyValue, true)?.DeleteValue(ApplicationKeyValue);
+            Registry.CurrentUser.OpenSubKey(CurrentUserRegistryKeyValue, true)?.DeleteValue(ApplicationKeyValue);
         }
 
         /// <summary>
