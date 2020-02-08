@@ -26,8 +26,8 @@ namespace DailyBingWallpaper
     /// </summary>
     internal class RegistryMgt
     {
-        const string RegistryKeyValue = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run";
         const string CurrentUserRegistryKeyValue = @"Software\Microsoft\Windows\CurrentVersion\Run";
+        const string RegistryKeyValue = @"HKEY_CURRENT_USER\" + CurrentUserRegistryKeyValue;
         const string ApplicationKeyValue = "Daily Bing Wallpaper";
 
         /// <summary>
