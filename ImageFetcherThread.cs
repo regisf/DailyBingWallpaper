@@ -18,7 +18,7 @@
 
 using System;
 using System.Threading;
-using static DailyBingWallpaper .ConfigurationDO;
+using static DailyBingWallpaper.ConfigurationDO;
 
 namespace DailyBingWallpaper 
 {
