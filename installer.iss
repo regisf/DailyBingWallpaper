@@ -3,9 +3,12 @@
 ;
 ; Use Inno Setup to create the installer
 ;
+
+#define AppVer GetFileVersion('bin/Release/DailyBingWallpaper.exe')
+
 [Setup]
 AppName=BingWallpaper
-AppVersion=1.0
+AppVersion={#AppVer}
 WizardStyle=modern
 DefaultDirName={autopf}\BingWallpaper
 DefaultGroupName=Daily Bing Wallpaper
@@ -14,7 +17,7 @@ Compression=lzma2
 SolidCompression=yes
 OutputDir=Installer
 LicenseFile=LICENSE.txt
-OutputBaseFilename=DailyBingWallpaper
+OutputBaseFilename=DailyBingWallpaper-{#AppVer}
 
 [Run]
 Filename: {app}\{cm:AppName}.exe; Description: {cm:LaunchProgram,{cm:AppName}}; Flags: nowait postinstall skipifsilent
@@ -24,7 +27,8 @@ AppName=BingWallpaper
 LaunchProgram=Start Bing Wallpaper after finishing installation
 
 [Files]
-Source: "bin/Debug/BingWallpaper.exe"; DestDir: "{app}"; DestName: "BingWallpaper.exe"
+Source: "bin/Release/BingWallpaper.exe"; DestDir: "{app}"; DestName: "BingWallpaper.exe"
+Source: "bin/Release/WindowsBase.dll"; DestDir: "{app}"; DestName: "WindowsBase.dll"
 Source: "README.md"; DestDir: "{app}"
 Source: "LICENSE.txt"; DestDir: "{app}"
 
@@ -32,7 +36,6 @@ Source: "LICENSE.txt"; DestDir: "{app}"
 Name: "{group}\Daily Bing Wallpaper"; Filename: "{app}\BingWallpaper.exe"
 
 [Code]
-
 (* This code (c) Christoph Nahr 2010 and later see: http://www.kynosarges.de/DotNetVersion.html *) 
 function IsDotNetDetected(version: string; service: cardinal): boolean;
 var
