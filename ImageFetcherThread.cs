@@ -20,7 +20,7 @@ using System;
 using System.Threading;
 using static DailyBingWallpaper.ConfigurationDO;
 
-namespace DailyBingWallpaper 
+namespace DailyBingWallpaper
 {
     /// <summary>
     /// Thead to load the image either from hard drive or from the internet
@@ -28,6 +28,8 @@ namespace DailyBingWallpaper
     /// </summary>
     internal class ImageFetcherThread
     {
+        private BingImage bingImage = null;
+
         private Thread LoaderThread { get; set; }
 
         private System.Timers.Timer WakeupTimer { get; set; }
@@ -49,26 +51,23 @@ namespace DailyBingWallpaper
 
 
                 case FetchType.WithServerTimestamp:
-                    LoadWithServerTimestap();
+                    LoadWithServerTimestamp();
                     break;
             }
         }
 
-        private void LoadWithServerTimestap()
+        /// <summary>
+        /// Load the Bing image from disk and check the next load. 
+        /// If the image is too old, reload it directly. 
+        /// Also,remove old images on disk regarding the user preferences.
+        /// </summary>
+        private void LoadWithServerTimestamp()
         {
             Logger.Log("Loading with timestamp");
             bool loaded = false;
 
-            var storage = new ResultStorage();
-            if (!storage.Exists)
-            {
-                Logger.Warning("There is no storage. Is it the  first time?. Load image now.");
-                
-                LoadNow();
-                loaded = true;
-            } 
+            var bingImage = GetBingImageFromStorage();
 
-            var bingImage = storage.Load().First;
             var endDate = ToDate(bingImage.EndDate.ToString());
             var timeDiff = DateTime.Now - endDate;
 
@@ -88,9 +87,41 @@ namespace DailyBingWallpaper
             }
 
             SetupNextLoad(timeDiff.TotalMilliseconds);
-            
-            var imageStorage = new ImageStorage(bingImage);
-            imageStorage.RemovePreviousImage();
+
+            RemovePreviousImages(bingImage);
+        }
+
+        /// <summary>
+        /// Get the bing image from the Hard drive
+        /// </summary>
+        /// <returns></returns>
+        private BingImage GetBingImageFromStorage()
+        {
+            var storage = new ResultStorage();
+            if (!storage.Exists)
+            {
+                Logger.Warning("There is no storage. Is it the  first time?. Load image now.");
+
+                LoadNow();
+            }
+
+            var bingImage = storage.Load().First;
+
+            return bingImage;
+        }
+
+        /// <summary>
+        /// Remove the previous images regarding the preferences
+        /// </summary>
+        /// <param name="bingImage"></param>
+        private void RemovePreviousImages(BingImage bingImage = null)
+        {
+            if (bingImage == null)
+            {
+                bingImage = GetBingImageFromStorage();
+            }
+
+            new ImageStorage(bingImage).RemovePreviousImage();
         }
 
         private void SetupNextLoad(double remaining)
@@ -108,7 +139,7 @@ namespace DailyBingWallpaper
             WakeupTimer = new System.Timers.Timer(remainingMilliSeconds);
             WakeupTimer.Enabled = true;
             WakeupTimer.AutoReset = false;
-            WakeupTimer.Elapsed += (s, a) => LoadWithServerTimestap();
+            WakeupTimer.Elapsed += (s, a) => LoadWithServerTimestamp();
             WakeupTimer.Start();
         }
 
@@ -123,16 +154,17 @@ namespace DailyBingWallpaper
         internal void LoadNow()
         {
             Logger.Log("Load the image now and ");
-            var loader = new BingLoader(); 
+            var loader = new BingLoader();
             loader.HasResult += OnHaveResult;
             loader.HasImage += OnHaveImage;
             loader.Load();
+
         }
 
         private void OnHaveImage(object source, HasImageEventArgs e)
         {
             Logger.Log("Got an image. Save it and set it as a wallpaper");
-            
+
             var storage = new ImageStorage(e.Image, e.Name);
             storage.Save();
             SystemCallsMgt.SetImageAsWallpaper(storage.Path);
@@ -144,7 +176,7 @@ namespace DailyBingWallpaper
         private void OnHaveResult(object source, HasImageResultEventArgs e)
         {
             Logger.Log("Got a Bing server response. Save the result json as a file");
-            
+
             var storage = new ResultStorage(e.Result);
             storage.Save();
         }
@@ -155,7 +187,7 @@ namespace DailyBingWallpaper
         internal void Stop()
         {
             Logger.Log("Stop the fetcher thread");
-            
+
             LoaderThread.Abort();
         }
 
@@ -166,7 +198,7 @@ namespace DailyBingWallpaper
         internal void Start()
         {
             Logger.Log("Start the fetcher thread");
-            
+
             LoaderThread = new Thread(new ThreadStart(Run));
             LoaderThread.Start();
         }
