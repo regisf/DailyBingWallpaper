@@ -93,10 +93,8 @@ namespace DailyBingWallpaper
                 return;
             }
 
-            var bingImage = new ResultStorage().Load().First;
-            var currentImagePath = CreateImagePath(bingImage.Name);
-            var savepath = ConfigurationMgt.GetInstance().Configuration.SavePath;
-            var filePathes = Directory.GetFiles(savepath, "*.jpg", SearchOption.TopDirectoryOnly);
+            var filePathes = GetFilePathes();
+            var currentImagePath = GetCurrentImagePath();
 
             Logger.Log("There is {0} files to remove", filePathes.Length - 1);
             foreach (var path in filePathes)
@@ -106,8 +104,40 @@ namespace DailyBingWallpaper
                     continue;
                 }
 
-                File.Delete(path);
+                Logger.Log("Deleting {0}", path);
+                try
+                {
+                    File.Delete(path);
+                } 
+                
+                catch(Exception err)
+                {
+                    Logger.Error("Unable to delete the file {0} because of {1}", path, err.ToString());
+                }
             }
+
+            Logger.Log("All images deleted");
+        }
+
+        /// <summary>
+        /// Returns all files inside the image files directory
+        /// </summary>
+        /// <returns>The file pathes from image files directory</returns>
+        /// <see cref="ConfigurationDO.SavePath"/>
+        private string[] GetFilePathes()
+        {
+            var savepath = ConfigurationMgt.GetInstance().Configuration.SavePath;
+            return Directory.GetFiles(savepath, "*.jpg", SearchOption.TopDirectoryOnly);
+        }
+
+        /// <summary>
+        /// Construct the current image path
+        /// </summary>
+        /// <returns>The current image path</returns>
+        private string GetCurrentImagePath()
+        {
+            var imageName = new ResultStorage().Load().First.Name;
+            return CreateImagePath(imageName);
         }
     }
 }

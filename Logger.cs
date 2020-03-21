@@ -28,6 +28,7 @@ namespace DailyBingWallpaper
         private const string DebugFormat = " DEBUG ";
         private const string InfoFormat = "  INFO ";
         private const string WarningFormat = "WARNING";
+        private const string ErrorFormat = " ERROR ";
         private const string CriticalFormat = "CRITICAL";
 
         static Logger _logger = null;
@@ -38,6 +39,7 @@ namespace DailyBingWallpaper
             Debug,
             Info,
             Warning,
+            Error,
             Critical
         }
 
@@ -88,6 +90,10 @@ namespace DailyBingWallpaper
                     levelStr = WarningFormat;
                     break;
 
+                case LogLevel.Error:
+                    levelStr = ErrorFormat;
+                    break;
+
                 case LogLevel.Critical:
                     levelStr = CriticalFormat;
                     break;
@@ -107,6 +113,11 @@ namespace DailyBingWallpaper
 #endif
             LogStream.WriteLine(String.Format(LogFormat, level, DateTime.UtcNow, message).ToCharArray());
             LogStream.Flush();
+        }
+
+        public static void Error(string message, params object[] args)
+        {
+            Log(message, LogLevel.Error, args);
         }
 
         public static void Debug(string message, params object[] args)

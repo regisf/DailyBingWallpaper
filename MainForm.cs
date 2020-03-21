@@ -38,14 +38,6 @@ namespace DailyBingWallpaper
             ConnectEvents();
             StartFetcherThread();
 
-            Load += OnMainFormLoad;
-            Activated += (sender, args) =>
-           {
-               var resultStorage = new ResultStorage();
-               var bingResult = resultStorage.Load();
-               var imgStorage = new ImageStorage(bingResult.First) ;
-               pictureBox.Image = imgStorage.Image;
-           };
         }
 
         /// <summary>
@@ -67,6 +59,16 @@ namespace DailyBingWallpaper
 
             Application.ApplicationExit += EndFetcherThread;
             quitToolStripMenuItem.Click += (sender, args) => Application.Exit();
+
+            Load += OnMainFormLoad;
+            Activated += (sender, args) =>
+            {
+                var resultStorage = new ResultStorage();
+                var bingResult = resultStorage.Load();
+                var imgStorage = new ImageStorage(bingResult.First);
+                pictureBox.Image = imgStorage.Image;
+            };
+
         }
 
         /// <summary>
